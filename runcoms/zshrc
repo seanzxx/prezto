@@ -14,3 +14,4 @@ fi
 export GREP_COLOR='1;32'
 export GREP_OPTIONS='--color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
 export LSCOLORS=Gxfxcxdxbxegedabagacad
+export JAVA_HOME=$(/usr/libexec/java_home -v 1.6)
