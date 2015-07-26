@@ -65,8 +65,11 @@ function prompt_seanzxx_setup {
   # Set python-info parameters.
   zstyle ':prezto:module:python:info:virtualenv' format '%F{cyan}[python:%v]%f'
 
+  # Set node-info parameters.
+  zstyle ':prezto:module:node:info:version' format '%F{green}[node:%v]%f'
+
   # Define prompts.
-  PROMPT='%B%F{green}%n@%m%f%b %F{white}[%~]%f${git_info:+${(e)git_info[prompt]}} $python_info[virtualenv]%(!. %B%F{red}#%f%b.)
+  PROMPT='%B%F{green}%n@%m%f%b %F{white}[%~]%f${git_info:+${(e)git_info[prompt]}} $python_info[virtualenv] $node_info[version]%(!. %B%F{red}#%f%b.)
 %F{blue}->%B %#%b%f '
   RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}'
   SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
