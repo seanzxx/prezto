@@ -11,25 +11,64 @@
 # Load dependencies.
 pmodload 'helper'
 
+function prompt_seanzxx_get_info {
+  if (( $+functions[$1-info] )); then
+    unset $1_info
+    
+    {
+      $1-info
+      typeset -p $1_info >> "$_prompt_seanzxx_precmd_async_data"
+      echo "unset '_prompt_seanzxx_precmd_async_pid[$1]'" >> "$_prompt_seanzxx_precmd_async_data"
+
+      kill -WINCH $$
+    } &!
+
+    _prompt_seanzxx_precmd_async_pid[$1]=$!
+  fi
+}
+
+function prompt_seanzxx_apply_info {
+  alias typeset='typeset -g'
+
+  source "$_prompt_seanzxx_precmd_async_data"
+
+  unalias typeset
+
+  # Reset the prompt
+  zle && zle reset-prompt
+}
+
 function prompt_seanzxx_precmd {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
 
-  # Get Git repository information.
-  if (( $+functions[git-info] )); then
-    git-info
-  fi
 
-  # Get Python information.
-  if (( $+functions[python-info] )); then
-    python-info
-  fi
+  # Kill all running jobs
+  for pid in $_prompt_seanzxx_precmd_async_pid; do
+    kill -KILL $pid
+  done
+
+  # Reset Variables
+  _prompt_seanzxx_precmd_async_pid=()
+  echo '' >! "$_prompt_seanzxx_precmd_async_data"
+
+  trap prompt_seanzxx_apply_info WINCH
+
+  # Get informations.
+  prompt_seanzxx_get_info 'git'
+  prompt_seanzxx_get_info 'python'
+  prompt_seanzxx_get_info 'ruby'
+  prompt_seanzxx_get_info 'node'
 }
 
 function prompt_seanzxx_setup {
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
   prompt_opts=(cr percent subst)
+
+  # Async prompt variables.
+  typeset -Ag _prompt_seanzxx_precmd_async_pid
+  _prompt_seanzxx_precmd_async_data="${TMPPREFIX}-prompt_seanzxx_data"
 
   # Load required functions.
   autoload -Uz add-zsh-hook
@@ -49,7 +88,7 @@ function prompt_seanzxx_setup {
   zstyle ':prezto:module:git:info:added' format '%%B%F{green}✚%f%%b'
   zstyle ':prezto:module:git:info:ahead' format '%%B%F{yellow}⬆%f%%b'
   zstyle ':prezto:module:git:info:behind' format '%%B%F{yellow}⬇%f%%b'
-  zstyle ':prezto:module:git:info:branch' format '%F{green}%b%f'
+  zstyle ':prezto:module:git:info:branch' format '%F{202}%b%f'
   zstyle ':prezto:module:git:info:commit' format ':%F{green}%.7c%f'
   zstyle ':prezto:module:git:info:deleted' format '%%B%F{red}✖%f%%b'
   zstyle ':prezto:module:git:info:modified' format '%%B%F{blue}✱%f%%b'
@@ -59,18 +98,25 @@ function prompt_seanzxx_setup {
   zstyle ':prezto:module:git:info:unmerged' format '%%B%F{yellow}═%f%%b'
   zstyle ':prezto:module:git:info:untracked' format '%%B%F{white}◼%f%%b'
   zstyle ':prezto:module:git:info:keys' format \
-    'prompt' ' %F{green}[git:%f$(coalesce "%b" "%p" "%c")%s%A%B%S%a%d%m%r%U%u%F{green}]%f' \
-    'rprompt' ''
+    'status' '%F{202}[git:%f$(coalesce "%b" "%p" "%c")%s%A%B%S%a%d%m%r%U%u%F{202}]%f'
 
   # Set python-info parameters.
-  zstyle ':prezto:module:python:info:virtualenv' format '%F{cyan}[python:%v]%f'
+  zstyle ':prezto:module:python:info:virtualenv' format '%F{24}[python:%v]%f'
+
+  # Set ruby-info parameters.
+  zstyle ':prezto:module:ruby:info:version' format '%F{9}[ruby:%v]%f'
 
   # Set node-info parameters.
-  zstyle ':prezto:module:node:info:version' format '%F{green}[node:%v]%f'
+  zstyle ':prezto:module:node:info:version' format '%F{76}[node:%v]%f'
 
   # Define prompts.
-  PROMPT='%B%F{green}%n@%m%f%b %F{white}[%~]%f${git_info:+${(e)git_info[prompt]}} $python_info[virtualenv] $node_info[version]%(!. %B%F{red}#%f%b.)
-%F{blue}->%B %#%b%f '
+  PROMPT='%B%F{green}%n@%m%f%b %F{white}[%~]%f'
+  PROMPT+='${git_info:+ ${(e)git_info[status]}}'
+  PROMPT+='${python_info:+ $python_info[virtualenv]}'
+  PROMPT+='${ruby_info:+ $ruby_info[version]}'
+  PROMPT+='${node_info:+ $node_info[version]}'
+  PROMPT+=$'\n''%F{blue}->%B %#%b%f '
+
   RPROMPT='${editor_info[overwrite]}%(?:: %F{red}⏎%f)${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}'
   SPROMPT='zsh: correct %F{red}%R%f to %F{green}%r%f [nyae]? '
 }
