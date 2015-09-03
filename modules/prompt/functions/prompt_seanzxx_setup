@@ -98,21 +98,24 @@ function prompt_seanzxx_setup {
   zstyle ':prezto:module:git:info:unmerged' format '%%B%F{yellow}═%f%%b'
   zstyle ':prezto:module:git:info:untracked' format '%%B%F{white}◼%f%%b'
   zstyle ':prezto:module:git:info:keys' format \
-    'status' '%F{202}[git:%f$(coalesce "%b" "%p" "%c")%s%A%B%S%a%d%m%r%U%u%F{202}]%f'
+    'status' '%F{202}[%f$(coalesce "%b" "%p" "%c")%s%A%B%S%a%d%m%r%U%u%F{202}]%f'
 
   # Set python-info parameters.
-  zstyle ':prezto:module:python:info:virtualenv' format '%F{24}[python:%v]%f'
+  zstyle ':prezto:module:python:info:version' format '%v'
+  zstyle ':prezto:module:python:info:virtualenv' format ':%v'
+  zstyle ':prezto:module:python:info' format '%F{24}[%e%i]%f'
+
 
   # Set ruby-info parameters.
-  zstyle ':prezto:module:ruby:info:version' format '%F{9}[ruby:%v]%f'
+  zstyle ':prezto:module:ruby:info:version' format '%F{9}[%v]%f'
 
   # Set node-info parameters.
-  zstyle ':prezto:module:node:info:version' format '%F{76}[node:%v]%f'
+  zstyle ':prezto:module:node:info:version' format '%F{76}[%v]%f'
 
   # Define prompts.
   PROMPT='%B%F{green}%n@%m%f%b %F{white}[%~]%f'
   PROMPT+='${git_info:+ ${(e)git_info[status]}}'
-  PROMPT+='${python_info:+ $python_info[virtualenv]}'
+  PROMPT+='${python_info:+ ${python_info[all]}}'
   PROMPT+='${ruby_info:+ $ruby_info[version]}'
   PROMPT+='${node_info:+ $node_info[version]}'
   PROMPT+=$'\n''%F{blue}->%B %#%b%f '
