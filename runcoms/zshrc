@@ -11,13 +11,13 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-export GREP_COLOR='1;32'
-export GREP_OPTIONS='--color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
-export LSCOLORS=Gxfxcxdxbxegedabagacad
-export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-export GOPATH=/Users/Xiaoxun/Documents/Workspace/go
+# export GREP_COLOR='1;32'
+# export GREP_OPTIONS='--color=auto --exclude-dir=.cvs --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
+# export LSCOLORS=Gxfxcxdxbxegedabagacad
+# export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+# export GOPATH=/Users/Xiaoxun/Documents/Workspace/go
 
-alias dme='eval "$(docker-machine env dev)"'
-alias docker-push='dme && ./gradlew clean installDist && docker build -t seanzxx/poi-service . && docker push seanzxx/poi-service'
+# alias dme='eval "$(docker-machine env dev)"'
+# alias docker-push='dme && ./gradlew clean installDist && docker build -t seanzxx/poi-service . && docker push seanzxx/poi-service'
 
 source /usr/local/share/zsh/site-functions/_aws
