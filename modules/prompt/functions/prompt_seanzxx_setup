@@ -45,7 +45,7 @@ function prompt_seanzxx_precmd {
 
   # Kill all running jobs
   for pid in $_prompt_seanzxx_precmd_async_pid; do
-    kill -KILL $pid
+    kill -KILL $pid 2> /dev/null
   done
 
   # Reset Variables
