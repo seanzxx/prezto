@@ -14,6 +14,11 @@ fi
 # Add zsh-completions to $fpath.
 fpath=("${0:h}/external/src" $fpath)
 
+# Add homebrew-completions to $fpath if homebrew installed.
+if (( $+commands[brew] )); then
+  fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
+fi
+
 # Load and initialize the completion system ignoring insecure directories.
 autoload -Uz compinit && compinit -i
 
