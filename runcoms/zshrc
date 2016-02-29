@@ -20,4 +20,4 @@ fi
 # alias dme='eval "$(docker-machine env dev)"'
 # alias docker-push='dme && ./gradlew clean installDist && docker build -t seanzxx/poi-service . && docker push seanzxx/poi-service'
 
-source /usr/local/share/zsh/site-functions/_aws
+alias brewU="sudo brew update && sudo brew upgrade && sudo brew cleanup && sudo chown -R root:wheel /usr/local"
